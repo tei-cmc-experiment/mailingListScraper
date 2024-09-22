@@ -11,7 +11,7 @@ NEWSPIDER_MODULE = 'mailingListScraper.spiders'
 LOG_FILE = 'log.txt'
 # Comment the following line when doing development.
 # For actual scraping, we don't want all the debugging messages.
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 
 # Crawl responsibly by identifying yourself (and your website) on the
 # user-agent AND uncomment the following lines before scraping.

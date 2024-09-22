@@ -34,6 +34,7 @@ https://lists.psu.edu/cgi-bin/wa?A2=TEI-L;9e3ba26.9001&amp;S=
 import re
 
 import scrapy
+from dask.dataframe.methods import values
 from scrapy.loader import ItemLoader
 from mailingListScraper.items import Email
 from mailingListScraper.spiders.ArchiveSpider import ArchiveSpider
@@ -45,7 +46,7 @@ class TEILSpider(ArchiveSpider):
 
     # Email Lists available from Hypermail archive:
     mailing_lists = {
-        'tei-l': 'https://lists.psu.edu/cgi-bin/wa?A0=TEI-L',
+        'tei-l': 'https://lists.psu.edu/cgi-bin/wa?A1=199001-199512&L=TEI-L',
     }
     default_list = 'tei-l'
 
@@ -58,7 +59,7 @@ class TEILSpider(ArchiveSpider):
         """
 
         msglist_urls = response.xpath('//table[@id="TEI-L-a1-table"]//tr/td[1]//a/@href').extract()
-        msglist_urls = [response.url + u for u in msglist_urls]
+        msglist_urls = ['https://lists.psu.edu/' + u for u in msglist_urls]
 
         # if any(self.years):
         #     urls = []
@@ -88,6 +89,7 @@ class TEILSpider(ArchiveSpider):
         for rel_url in msg_urls:
             msg_url = base_url + '/' + rel_url
             yield scrapy.Request(msg_url, callback=self.parse_item)
+            print('help')
 
     def parse_item(self, response):
         """
@@ -105,25 +107,27 @@ class TEILSpider(ArchiveSpider):
         # Take care of easy fields first
         load.add_value('url', response.url)
 
-        pattern_replyto = '//ul[1]/li[contains((b|strong), "In reply to:")]'
-        pattern_replyto += '/a/@href'
-        link = response.xpath(pattern_replyto).extract()
-        link = [''] if not link else link
+        # pattern_replyto = '//ul[1]/li[contains((b|strong), "In reply to:")]'
+        # pattern_replyto += '/a/@href'
+        # link = response.xpath(pattern_replyto).extract()
+        # link = [''] if not link else link
 
-        load.add_value('replyto', link[0])
+        # load.add_value('replyto', link[0])
 
         specific_fields = {
-            'topic': None,
-            'senderName': None,
-            'date': None,
-            'message': None,
+            'subject': 'Subject:',
+            'senderName': 'From:',
+            'timestampReceived': 'Date:',
+            'body': 'pre',
         }
 
         specific_fields = self.parse_system(response, specific_fields)
 
+
         # Load all the values from these specific fields
         for key, val in specific_fields.items():
             load.add_value(key, val)
+            print(key)
 
         return load.load_item()
 
@@ -134,6 +138,7 @@ class TEILSpider(ArchiveSpider):
         Populates the fields dictionary for responses that were generated
         by the old archive system (before 2003).
         """
+        print(fields)
 
         selectors = {
             'subject': 'Subject:',
@@ -143,9 +148,13 @@ class TEILSpider(ArchiveSpider):
         }
 
         for item, sel in selectors.items():
-            xpath = "(//b[.='" + sel + "']/following::div[1] | //*[name()='" + sel + "'])"
+            # xpath = "(//b[.='" + sel + "']/following::div[1]/text() | //*[name()='" + sel + "']/string())"
+            xpath = "//b[.='" + sel + "']"
             content = response.xpath(xpath).extract()
-            value = re.search('"(.*)"', content[0]).group(1)
-            fields[item] = value
+            # value = re.search('"(.*)"', content[0]).group(1)
+
+            fields[item] = content
+            print('whaaa')
+            print('VALUE' + content)
 
         return fields
