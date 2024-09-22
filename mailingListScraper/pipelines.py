@@ -80,7 +80,6 @@ class ParseTimeFields(object):
     def process_item(self, item, spider):
         times = {
             'timestampSent': 'timeSent',
-            'timestampReceived': 'timeReceived'
         }
 
         time_format = "%Y-%m-%d %H:%M:%S%z"
@@ -154,10 +153,7 @@ class XmlExport(object):
     """
 
     def __init__(self):
-        self.fields_to_export = ['mailingList', 'emailId',
-                                 'senderName', 'senderEmail',
-                                 'timestampSent', 'timestampReceived',
-                                 'subject', 'body']
+        self.fields_to_export = ['mailingList', 'senderName', 'timestampReceived','subject', 'body']
         self.file_base = ''
         self.exporters = {}
 
@@ -207,7 +203,9 @@ class XmlExport(object):
             return item
 
         # Get the year
-        time_format = "%Y-%m-%d %H:%M:%S%z"
+        # Mon, 8 Jan 90 16:08:22 CST
+        # time_format = "%Y-%m-%d %H:%M:%S%z"
+        time_format = "%a, %d %b %y %H:%M:%S %Z"
         timestamp = datetime.strptime(item['timestampReceived'], time_format)
         year = str(timestamp.year)
         filename = self.file_base + year + 'Bodies.xml'
@@ -254,10 +252,7 @@ class CsvExport(object):
         return pipeline
 
     def spider_opened(self, spider):
-        fields_to_export = ['mailingList', 'emailId',
-                            'senderName', 'senderEmail',
-                            'timestampSent', 'timestampReceived',
-                            'subject', 'url', 'replyto']
+        fields_to_export = ['mailingList', 'senderName', 'timestampReceived','subject', 'body']
 
         fields_to_export = [f for f in fields_to_export if f not in spider.drop_fields]
 
