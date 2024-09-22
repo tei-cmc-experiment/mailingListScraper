@@ -85,76 +85,30 @@ class TEILSpider(ArchiveSpider):
         # reg_url = re.search(r'^(.*)/index\.html', response.url)
         base_url = 'https://lists.psu.edu'
 
-        # TODO: refactor here
+
         for rel_url in msg_urls:
-            msg_url = base_url + '/' + rel_url
-            yield scrapy.Request(msg_url, callback=self.parse_item)
-            print('help')
-
-    def parse_item(self, response):
-        """
-        Extract fields from the individual email page and load them into the
-        item.
-
-        @url http://lkml.iu.edu/hypermail/linux/kernel/0111.3/0036.html
-        @returns items 1 1
-        @scrapes senderName senderEmail timeSent timeReceived subject body
-        @scrapes replyto url
-        """
-
-        load = ItemLoader(item=Email(), selector=response)
-
-        # Take care of easy fields first
-        load.add_value('url', response.url)
-
-        # pattern_replyto = '//ul[1]/li[contains((b|strong), "In reply to:")]'
-        # pattern_replyto += '/a/@href'
-        # link = response.xpath(pattern_replyto).extract()
-        # link = [''] if not link else link
-
-        # load.add_value('replyto', link[0])
-
-        specific_fields = {
-            'subject': 'Subject:',
-            'senderName': 'From:',
-            'timestampReceived': 'Date:',
-            'body': 'pre',
-        }
-
-        specific_fields = self.parse_system(response, specific_fields)
+            msg_url = base_url + rel_url
+            yield scrapy.Request(msg_url, callback=self.parse_message)
 
 
-        # Load all the values from these specific fields
-        for key, val in specific_fields.items():
-            load.add_value(key, val)
-            print(key)
-
-        return load.load_item()
-
-
-
-    def parse_system(self, response, fields):
+    def parse_message(self, response):
         """
         Populates the fields dictionary for responses that were generated
         by the old archive system (before 2003).
         """
-        print(fields)
-
-        selectors = {
+        fields = {
             'subject': 'Subject:',
             'senderName': 'From:',
             'timestampReceived': 'Date:',
             'body': 'pre',
         }
 
-        for item, sel in selectors.items():
-            # xpath = "(//b[.='" + sel + "']/following::div[1]/text() | //*[name()='" + sel + "']/string())"
-            xpath = "//b[.='" + sel + "']"
+        for item, sel in fields.items():
+            xpath = "(//b[.='" + sel + "']/following::div[1] | //*[name()='" + sel + "'])[1]"
             content = response.xpath(xpath).extract()
             # value = re.search('"(.*)"', content[0]).group(1)
+            print(f"XPath content: {content}")
 
             fields[item] = content
-            print('whaaa')
-            print('VALUE' + content)
 
         return fields

@@ -1,0 +1,51 @@
+2024-09-22 10:37:34 [scrapy.utils.log] INFO: Scrapy 2.11.2 started (bot: mailingListScraper)
+2024-09-22 10:37:34 [scrapy.utils.log] INFO: Versions: lxml 4.9.2.0, libxml2 2.9.14, cssselect 1.2.0, parsel 1.9.1, w3lib 2.2.1, Twisted 24.7.0, Python 3.9.16 (main, Dec  7 2022, 10:16:11) - [Clang 14.0.0 (clang-1400.0.29.202)], pyOpenSSL 24.2.1 (OpenSSL 3.3.2 3 Sep 2024), cryptography 43.0.1, Platform macOS-14.6.1-x86_64-i386-64bit
+2024-09-22 10:37:34 [scrapy.addons] INFO: Enabled addons:
+[]
+2024-09-22 10:37:34 [py.warnings] WARNING: /Users/eeb4/Library/Python/3.9/lib/python/site-packages/scrapy/utils/request.py:254: ScrapyDeprecationWarning: '2.6' is a deprecated value for the 'REQUEST_FINGERPRINTER_IMPLEMENTATION' setting.
+
+It is also the default value. In other words, it is normal to get this warning if you have not defined a value for the 'REQUEST_FINGERPRINTER_IMPLEMENTATION' setting. This is so for backward compatibility reasons, but it will change in a future version of Scrapy.
+
+See the documentation of the 'REQUEST_FINGERPRINTER_IMPLEMENTATION' setting for information on how to handle this deprecation.
+  return cls(crawler)
+
+2024-09-22 10:37:34 [scrapy.utils.log] DEBUG: Using reactor: twisted.internet.selectreactor.SelectReactor
+2024-09-22 10:37:34 [scrapy.extensions.telnet] INFO: Telnet Password: 7e8ad08fb34dad84
+2024-09-22 10:37:34 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage']
+2024-09-22 10:37:34 [scrapy.crawler] INFO: Overridden settings:
+{'BOT_NAME': 'mailingListScraper',
+ 'DUPEFILTER_CLASS': 'scrapy.dupefilters.BaseDupeFilter',
+ 'LOGSTATS_INTERVAL': 0,
+ 'LOG_FILE': 'log.txt',
+ 'NEWSPIDER_MODULE': 'mailingListScraper.spiders',
+ 'SPIDER_MODULES': ['mailingListScraper.spiders']}
+2024-09-22 10:37:34 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2024-09-22 10:37:34 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2024-09-22 10:37:34 [scrapy.middleware] INFO: Enabled item pipelines:
+['mailingListScraper.pipelines.ParseTimeFields',
+ 'mailingListScraper.pipelines.GenerateId',
+ 'mailingListScraper.pipelines.CleanSenderEmail',
+ 'mailingListScraper.pipelines.CleanReplyto',
+ 'mailingListScraper.pipelines.GetMailingList',
+ 'mailingListScraper.pipelines.XmlExport',
+ 'mailingListScraper.pipelines.CsvExport']
+2024-09-22 10:37:34 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
